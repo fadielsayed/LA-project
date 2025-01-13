@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>DATA DETECTIVES</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('data') }}">Data</a></li>
+                <li><a href="{{ url_for('prediction') }}">Predict</a></li>
+                <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="analytics-overview">
+            <h2>Analytics Page</h2>
+            <div class="charts">
+                <div class="chart" id="heatmap"></div>
+                <div class="chart" id="bar"></div>
+                <div class="chart" id="pie"></div>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Render Heatmap
+            var heatmapData = {{ heatmap_json | safe }};
+            Plotly.newPlot('heatmap', heatmapData);
+    
+            // Render Bar Chart
+            var barData = {{ bar_json | safe }};
+            Plotly.newPlot('bar', barData);
+    
+            // Render Pie Chart
+            var pieData = {{ pie_json | safe }};
+            Plotly.newPlot('pie', pieData);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>DATA DETECTIVES</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('data') }}">Data</a></li>
+                <li><a href="{{ url_for('prediction') }}">Predict</a></li>
+                <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="data-overview">
+            <h2>Data Page</h2>
+            <div class="charts">
+                <div class="chart" id="pie"></div>
+                <div class="chart" id="bar"></div>
+                <div class="chart" id="bar2"></div>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Render Pie Chart
+        var pieData = {{ pie_json | safe }};
+        Plotly.newPlot('pie', pieData);
+
+        // Render Bar Chart
+        var barData = {{ bar_json | safe }};
+        Plotly.newPlot('bar', barData);
+
+        // Render Another Bar Chart
+        var bar2Data = {{ bar2_json | safe }};
+        Plotly.newPlot('bar2', bar2Data);
+    </script>
+</body>
+</html>

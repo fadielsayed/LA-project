@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>DATA DETECTIVES</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('data') }}">Data</a></li>
+                <li><a href="{{ url_for('prediction') }}">Predict</a></li>
+                <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="prediction-form">
+            <h2>Prediction Page</h2>
+            <form method="POST">
+                <label for="study_hours">Study Hours per Day:</label>
+                <input type="number" id="study_hours" name="study_hours" step="0.1" required><br>
+
+                <label for="sleep_hours">Sleep Hours per Day:</label>
+                <input type="number" id="sleep_hours" name="sleep_hours" step="0.1" required><br>
+
+                <label for="social_hours">Social Hours per Day:</label>
+                <input type="number" id="social_hours" name="social_hours" step="0.1" required><br>
+
+                <label for="stress_level">Stress Level:</label>
+                <select id="stress_level" name="stress_level" required>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select><br>
+
+                <label for="physical_activity_hours">Physical Activity Hours per Day:</label>
+                <input type="number" id="physical_activity_hours" name="physical_activity_hours" step="0.1" required><br>
+
+                <button type="submit">Predict</button>
+            </form>
+
+            {% if result %}
+            <h3>Prediction Result: {{ result }}</h3>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
