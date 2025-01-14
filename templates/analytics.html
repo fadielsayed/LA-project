@@ -26,6 +26,17 @@
                 <div class="chart" id="heatmap"></div>
                 <div class="chart" id="bar"></div>
                 <div class="chart" id="pie"></div>
+                <div class="chart" id="cluster"></div>
+            </div>
+            <div class="results">
+                <div class="result">
+                    <h3>Linear Regression Result</h3>
+                    <p>{{ regression_result }}</p>
+                </div>
+                <div class="result">
+                    <h3>Decision Tree Classification Result</h3>
+                    <p>{{ classification_result }}</p>
+                </div>
             </div>
         </section>
     </main>
@@ -42,6 +53,10 @@
             // Render Pie Chart
             var pieData = {{ pie_json | safe }};
             Plotly.newPlot('pie', pieData);
+    
+            // Render Cluster Chart
+            var clusterData = {{ cluster_json | safe }};
+            Plotly.newPlot('cluster', clusterData);
         });
     </script>
 </body>

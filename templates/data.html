@@ -22,10 +22,34 @@
     <main>
         <section class="data-overview">
             <h2>Data Page</h2>
-            <div class="charts">
-                <div class="chart" id="pie"></div>
-                <div class="chart" id="bar"></div>
-                <div class="chart" id="bar2"></div>
+            <div class="chart-grid">
+                <!-- Row 1 -->
+                <div class="chart-container">
+                    <div class="chart" id="pie"></div>
+                    <p class="chart-description">
+                        <strong>Stress Level Distribution:</strong> This pie chart shows the proportion of students with Low, Moderate, and High stress levels.
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <div class="chart" id="bar"></div>
+                    <p class="chart-description">
+                        <strong>Study Hours vs GPA:</strong> This bar chart shows how the number of study hours per day relates to students' GPA.
+                    </p>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="chart-container">
+                    <div class="chart" id="scatter"></div>
+                    <p class="chart-description">
+                        <strong>Study Hours vs GPA (Colored by Stress Level):</strong> This scatter plot shows the relationship between study hours and GPA, with points colored by stress level. It helps identify patterns between study habits, stress, and academic performance.
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <div class="chart" id="heatmap"></div>
+                    <p class="chart-description">
+                        <strong>Study Hours vs Sleep Hours vs GPA:</strong> This heatmap shows how study hours and sleep hours interact to influence GPA. Darker colors represent higher GPA values, helping to identify optimal study and sleep patterns.
+                    </p>
+                </div>
             </div>
         </section>
     </main>
@@ -38,9 +62,13 @@
         var barData = {{ bar_json | safe }};
         Plotly.newPlot('bar', barData);
 
-        // Render Another Bar Chart
-        var bar2Data = {{ bar2_json | safe }};
-        Plotly.newPlot('bar2', bar2Data);
+        // Render Scatter Plot
+        var scatterData = {{ scatter_json | safe }};
+        Plotly.newPlot('scatter', scatterData);
+
+        // Render Heatmap
+        var heatmapData = {{ heatmap_json | safe }};
+        Plotly.newPlot('heatmap', heatmapData);
     </script>
 </body>
 </html>
