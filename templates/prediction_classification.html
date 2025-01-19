@@ -21,7 +21,7 @@
     </header>
     <main>
         <section class="prediction-form">
-            <h2>Prediction Page</h2>
+            <h2>Stress Prediction Page</h2>
             <form method="POST">
                 <label for="study_hours">Study Hours per Day:</label>
                 <input type="number" id="study_hours" name="study_hours" step="0.1" required><br>
@@ -32,21 +32,24 @@
                 <label for="social_hours">Social Hours per Day:</label>
                 <input type="number" id="social_hours" name="social_hours" step="0.1" required><br>
 
-                <label for="stress_level">Stress Level:</label>
-                <select id="stress_level" name="stress_level" required>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                </select><br>
-
                 <label for="physical_activity_hours">Physical Activity Hours per Day:</label>
                 <input type="number" id="physical_activity_hours" name="physical_activity_hours" step="0.1" required><br>
+
+                <label for="GPA">GPA:</label>
+                <input type="number" id="GPA" name="GPA" step="0.1" required><br>
+
+                <label for="Classification_Model">Select the Classification Model:</label>
+                <select id="Classification_Model" name="Classification_Model" required>
+                    <option value="KNN">K-Nearest Neighbour</option>
+                    <option value="SVC">Support Vector Classification</option>
+                    <option value="DT">Decision Tree</option>
+                </select><br>
 
                 <button type="submit">Predict</button>
             </form>
 
             {% if result %}
-            <h3>Prediction Result: {{ result }}</h3>
+            <h3>Predicted Stress Level is <i>{{ result }}</i></h3>
             {% endif %}
         </section>
     </main>
