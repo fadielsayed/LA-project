@@ -13,7 +13,8 @@
             <ul>
                 <li><a href="{{ url_for('index') }}">Home</a></li>
                 <li><a href="{{ url_for('data') }}">Data</a></li>
-                <li><a href="{{ url_for('prediction') }}">Predict</a></li>
+                <li><a href="{{ url_for('prediction') }}">GPA Prediction</a></li>
+                <li><a href="{{ url_for('stress_prediction') }}">Stress Prediction</a></li>
                 <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
             </ul>
         </nav>
@@ -22,7 +23,9 @@
         <section class="hero">
             <h2>Student Performance Prediction System</h2>
             <p>Designed for students, educators, and institutions, our platform uses advanced analytics to predict student performance and identify areas for improvement.</p>
-            <a href="{{ url_for('prediction') }}" class="cta-button">Start Your Prediction</a>
+            <h2>Start Your Prediction:</h2>
+            <a href="{{ url_for('prediction') }}" class="cta-button">GPA</a>
+            <a href="{{ url_for('stress_prediction') }}" class="cta-button">Stress Level</a>
         </section>
         <section class="contact">
             <h3>Contact us:</h3>

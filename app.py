@@ -22,6 +22,18 @@ model_path = os.path.join('models', 'model.pkl')
 with open(model_path, 'rb') as f:
     model = pickle.load(f)
 
+# Load classification models
+with open('models/DT.pkl','rb') as f:
+    tree = pickle.load(f)
+
+with open('models/SVC.pkl','rb') as f:
+    svc = pickle.load(f)
+
+with open('models/KNN.pkl','rb') as f:
+    knn = pickle.load(f)
+
+cl_model_dict = {"KNN":knn, "SVC":svc, "DT":tree}
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -132,13 +144,39 @@ def prediction():
         # Make prediction with the 5 features
         input_data = [[study_hours, sleep_hours, social_hours, stress_level_num, physical_activity_hours]]
         prediction = model.predict(input_data)
-
+        
         # Determine pass/fail
         result = "Pass" if prediction[0] == 1 else "Fail"
 
         return render_template('prediction.html', result=result)
 
     return render_template('prediction.html')
+
+
+@app.route('/stress-prediction', methods=['GET', 'POST'])
+def stress_prediction():
+    if request.method == 'POST':
+        # Get form data
+        study_hours = float(request.form['study_hours'])
+        sleep_hours = float(request.form['sleep_hours'])
+        social_hours = float(request.form['social_hours'])
+        gpa = float(request.form['GPA'])
+        physical_activity_hours = float(request.form['physical_activity_hours'])
+
+        cl_model = request.form['Classification_Model']
+        model = cl_model_dict[cl_model]
+        
+        # Make prediction with the 5 features
+        input_data = [[study_hours, sleep_hours, social_hours, gpa, physical_activity_hours]]
+        prediction = model.predict(input_data)[0]
+        
+        # # Determine pass/fail
+        stress = {0: "Low", 1:'Moderate', 2:'High'}
+        result = stress[prediction]
+
+        return render_template('prediction_classification.html', result=result)
+
+    return render_template('prediction_classification.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
