@@ -26,9 +26,9 @@ X.fillna(X.mean(), inplace=True)
 
 # Define the target variable
 # the target variable y is derived from the GPA column:
-# A GPA of 3.0 or higher is considered a pass (1).
-# A GPA below 3.0 is considered a fail (0).
-y = df['GPA'].apply(lambda x: 1 if x >= 3.0 else 0)  # 1 for Pass, 0 for Fail
+# A GPA of 2.0 or higher is considered a pass (1).
+# A GPA below 2.0 is considered a fail (0).
+y = df['GPA'].apply(lambda x: 1 if x >= 2.0 else 0)  # 1 for Pass, 0 for Fail
 
 # Split the data into training and testing sets
 # The dataset is split into:

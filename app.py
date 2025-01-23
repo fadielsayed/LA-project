@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
-import pickle
+import pickle  #load a pre-trained machine learning model.
 import os
-import plotly
+import plotly  #creating interactive visualizations.
 import plotly.express as px
 import json
 from sklearn.linear_model import LinearRegression
@@ -28,7 +28,7 @@ def index():
 
 @app.route('/analytics')
 def analytics():
-    print("Rendering analytics page...")  # Debug statement
+    print("Rendering analytics page...")  
 
     # Convert Stress_Level to numerical values
     stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
