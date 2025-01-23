@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Performance Prediction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>DATA DETECTIVES</h1>
+    <header class="sticky-header">
+        <h1>
+            <img src="{{ url_for('static', filename='data-detectives-logo.png') }}" alt="Logo"> 
+            DATA DETECTIVES
+        </h1>
         <nav>
             <ul>
                 <li><a href="{{ url_for('index') }}">Home</a></li>
@@ -20,15 +24,21 @@
         </nav>
     </header>
     <main>
-        <section class="hero">
-            <h2>Student Performance Prediction System</h2>
-            <p>Designed for students, educators, and institutions, our platform uses advanced analytics to predict student performance and identify areas for improvement.</p>
-            <h2>Start Your Prediction:</h2>
-            <a href="{{ url_for('prediction') }}" class="cta-button">GPA</a>
-            <a href="{{ url_for('stress_prediction') }}" class="cta-button">Stress Level</a>
-        </section>
+<!-- Hero Section with Background Image -->
+<section class="hero" style="background-image: url('{{ url_for('static', filename='background_image.png') }}')">
+    <div class="hero-content">
+        <h2>Student Performance Prediction System</h2>
+        <p>Designed for students, educators, and institutions, our platform uses advanced analytics to predict student performance and identify areas for improvement.</p>
+        <div class="cta-buttons">
+            <a href="{{ url_for('prediction') }}" class="cta-button">GPA Prediction</a>
+            <a href="{{ url_for('stress_prediction') }}" class="cta-button">Stress Level Prediction</a>
+        </div>
+    </div>
+</section>
+
+        <!-- Contact Section Sticky at Bottom -->
         <section class="contact">
-            <h3>Contact us:</h3>
+            <h3>Contact Us</h3>
             <p>Email: info@datadetectives.com</p>
             <p>Phone: +123-456-7890</p>
         </section>

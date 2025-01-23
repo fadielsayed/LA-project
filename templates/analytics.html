@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analytics</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>DATA DETECTIVES</h1>
+    <header class="sticky-header">
+        <h1>
+            <img src="{{ url_for('static', filename='data-detectives-logo.png') }}" alt="Logo"> 
+            DATA DETECTIVES
+        </h1>
         <nav>
             <ul>
                 <li><a href="{{ url_for('index') }}">Home</a></li>
@@ -22,12 +26,62 @@
     </header>
     <main>
         <section class="analytics-overview">
-            <h2>Analytics Page</h2>
-            <div class="charts">
-                <div class="chart" id="heatmap"></div>
-                <div class="chart" id="bar"></div>
-                <div class="chart" id="pie"></div>
-                <div class="chart" id="cluster"></div>
+            <h2>Analytics Dashboard</h2>
+            <div class="grid-container">
+                <!-- Heatmap -->
+                <div class="chart-container">
+                    <div class="chart" id="heatmap"></div>
+                    <select id="heatmap-x-dropdown" class="chart-dropdown">
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                        <option value="GPA">GPA</option>
+                    </select>
+                    <select id="heatmap-y-dropdown" class="chart-dropdown">
+                        <option value="GPA">GPA</option>
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                    </select>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="chart-container">
+                    <div class="chart" id="bar"></div>
+                    <select id="bar-x-dropdown" class="chart-dropdown">
+                        <option value="Stress_Level">Stress Level</option>
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                    </select>
+                    <select id="bar-y-dropdown" class="chart-dropdown">
+                        <option value="GPA">GPA</option>
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                    </select>
+                </div>
+
+                <!-- Pie Chart -->
+                <div class="chart-container">
+                    <div class="chart" id="pie"></div>
+                    <select id="pie-dropdown" class="chart-dropdown">
+                        <option value="Stress_Level">Stress Level</option>
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                    </select>
+                </div>
+
+                <!-- Cluster Chart -->
+                <div class="chart-container">
+                    <div class="chart" id="cluster"></div>
+                    <select id="cluster-x-dropdown" class="chart-dropdown">
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                        <option value="GPA">GPA</option>
+                    </select>
+                    <select id="cluster-y-dropdown" class="chart-dropdown">
+                        <option value="Stress_Level_Num">Stress Level</option>
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                    </select>
+                </div>
             </div>
             <div class="results">
                 <div class="result">
@@ -42,23 +96,65 @@
         </section>
     </main>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Render Heatmap
-            var heatmapData = {{ heatmap_json | safe }};
-            Plotly.newPlot('heatmap', heatmapData);
-    
-            // Render Bar Chart
-            var barData = {{ bar_json | safe }};
-            Plotly.newPlot('bar', barData);
-    
-            // Render Pie Chart
-            var pieData = {{ pie_json | safe }};
-            Plotly.newPlot('pie', pieData);
-    
-            // Render Cluster Chart
-            var clusterData = {{ cluster_json | safe }};
-            Plotly.newPlot('cluster', clusterData);
+        // Initialize data
+        var df = JSON.parse('{{ df_json | safe }}');
+
+        // Render initial charts
+        Plotly.newPlot('heatmap', {{ heatmap_json | safe }});
+        Plotly.newPlot('bar', {{ bar_json | safe }});
+        Plotly.newPlot('pie', {{ pie_json | safe }});
+        Plotly.newPlot('cluster', {{ cluster_json | safe }});
+
+        // Dropdown event listeners
+        document.querySelectorAll('.chart-dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                updateChart(this.closest('.chart-container').querySelector('.chart').id);
+            });
         });
+
+        // Update chart based on dropdown selections
+        function updateChart(chartId) {
+            let xAttr, yAttr;
+            switch(chartId) {
+                case 'heatmap':
+                    xAttr = document.getElementById('heatmap-x-dropdown').value;
+                    yAttr = document.getElementById('heatmap-y-dropdown').value;
+                    Plotly.react('heatmap', [{
+                        x: df.map(d => d[xAttr]),
+                        y: df.map(d => d[yAttr]),
+                        type: 'heatmap'
+                    }]);
+                    break;
+                case 'bar':
+                    xAttr = document.getElementById('bar-x-dropdown').value;
+                    yAttr = document.getElementById('bar-y-dropdown').value;
+                    Plotly.react('bar', [{
+                        x: df.map(d => d[xAttr]),
+                        y: df.map(d => d[yAttr]),
+                        type: 'bar'
+                    }]);
+                    break;
+                case 'pie':
+                    const pieAttr = document.getElementById('pie-dropdown').value;
+                    Plotly.react('pie', [{
+                        values: df.map(d => d[pieAttr]),
+                        labels: df.map(d => d[pieAttr]),
+                        type: 'pie'
+                    }]);
+                    break;
+                case 'cluster':
+                    xAttr = document.getElementById('cluster-x-dropdown').value;
+                    yAttr = document.getElementById('cluster-y-dropdown').value;
+                    Plotly.react('cluster', [{
+                        x: df.map(d => d[xAttr]),
+                        y: df.map(d => d[yAttr]),
+                        mode: 'markers',
+                        type: 'scatter',
+                        marker: { color: df.map(d => d.Cluster) }
+                    }]);
+                    break;
+            }
+        }
     </script>
 </body>
 </html>

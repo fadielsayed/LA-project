@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prediction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>DATA DETECTIVES</h1>
+    <header class="sticky-header">
+        <h1>
+            <img src="{{ url_for('static', filename='data-detectives-logo.png') }}" alt="Logo"> 
+            DATA DETECTIVES
+        </h1>
         <nav>
             <ul>
                 <li><a href="{{ url_for('index') }}">Home</a></li>
@@ -21,32 +25,34 @@
     </header>
     <main>
         <section class="prediction-form">
-            <h2>Prediction Page</h2>
-            <form method="POST">
+            <h2>GPA Prediction</h2>
+            <form method="POST" class="form-grid">
                 <label for="study_hours">Study Hours per Day:</label>
-                <input type="number" id="study_hours" name="study_hours" step="0.1" required><br>
+                <input type="number" id="study_hours" name="study_hours" step="0.1" required>
 
                 <label for="sleep_hours">Sleep Hours per Day:</label>
-                <input type="number" id="sleep_hours" name="sleep_hours" step="0.1" required><br>
+                <input type="number" id="sleep_hours" name="sleep_hours" step="0.1" required>
 
                 <label for="social_hours">Social Hours per Day:</label>
-                <input type="number" id="social_hours" name="social_hours" step="0.1" required><br>
+                <input type="number" id="social_hours" name="social_hours" step="0.1" required>
 
                 <label for="stress_level">Stress Level:</label>
                 <select id="stress_level" name="stress_level" required>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
-                </select><br>
+                </select>
 
                 <label for="physical_activity_hours">Physical Activity Hours per Day:</label>
-                <input type="number" id="physical_activity_hours" name="physical_activity_hours" step="0.1" required><br>
+                <input type="number" id="physical_activity_hours" name="physical_activity_hours" step="0.1" required>
 
-                <button type="submit">Predict</button>
+                <button type="submit" class="submit-button">Predict</button>
             </form>
 
             {% if result %}
-            <h3>Prediction Result: {{ result }}</h3>
+            <div class="prediction-result">
+                <h3>Prediction Result: {{ result }}</h3>
+            </div>
             {% endif %}
         </section>
     </main>

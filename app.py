@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
-import pickle  #load a pre-trained machine learning model.
+import pickle
 import os
-import plotly  #creating interactive visualizations.
+import plotly
 import plotly.express as px
 import json
 from sklearn.linear_model import LinearRegression
@@ -15,24 +15,49 @@ app = Flask(__name__)
 
 # Load the dataset
 data_path = os.path.join('data', 'student_lifestyle_dataset.csv')
-df = pd.read_csv(data_path)
+try:
+    df = pd.read_csv(data_path)
+    print("Dataset loaded successfully.")
+    print(df.head())  # Print the first few rows of the dataset
+except FileNotFoundError:
+    print("Error: Dataset file not found. Please ensure the file exists at:", data_path)
+    df = pd.DataFrame()  # Fallback to an empty DataFrame
 
 # Load the trained model
 model_path = os.path.join('models', 'model.pkl')
-with open(model_path, 'rb') as f:
-    model = pickle.load(f)
+try:
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    print("Model loaded successfully.")
+except FileNotFoundError:
+    print("Error: Model file not found. Please ensure the file exists at:", model_path)
+    model = None  # Fallback to None
 
 # Load classification models
-with open('models/DT.pkl','rb') as f:
-    tree = pickle.load(f)
+cl_model_dict = {}
+try:
+    with open('models/DT.pkl', 'rb') as f:
+        cl_model_dict["DT"] = pickle.load(f)
+    print("Decision Tree model loaded successfully.")
+except FileNotFoundError:
+    print("Error: Decision Tree model file not found.")
 
-with open('models/SVC.pkl','rb') as f:
-    svc = pickle.load(f)
+try:
+    with open('models/SVC.pkl', 'rb') as f:
+        cl_model_dict["SVC"] = pickle.load(f)
+    print("SVC model loaded successfully.")
+except FileNotFoundError:
+    print("Error: SVC model file not found.")
 
-with open('models/KNN.pkl','rb') as f:
-    knn = pickle.load(f)
+try:
+    with open('models/KNN.pkl', 'rb') as f:
+        cl_model_dict["KNN"] = pickle.load(f)
+    print("KNN model loaded successfully.")
+except FileNotFoundError:
+    print("Error: KNN model file not found.")
 
-cl_model_dict = {"KNN":knn, "SVC":svc, "DT":tree}
+# Stress level mapping
+stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
 
 @app.route('/')
 def index():
@@ -40,10 +65,9 @@ def index():
 
 @app.route('/analytics')
 def analytics():
-    print("Rendering analytics page...")  
+    print("Rendering analytics page...")
 
     # Convert Stress_Level to numerical values
-    stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
     df['Stress_Level_Num'] = df['Stress_Level'].map(stress_level_map)
 
     # Linear Regression: Predict GPA based on Study Hours
@@ -55,16 +79,16 @@ def analytics():
     mse = mean_squared_error(y, y_pred)
     regression_result = f"Linear Regression MSE: {mse:.2f}"
 
-    # K-Means Clustering: Group students based on Study Hours and Stress Level
+    # K-Means Clustering
     kmeans = KMeans(n_clusters=3, random_state=42)
     df['Cluster'] = kmeans.fit_predict(df[['Study_Hours_Per_Day', 'Stress_Level_Num']])
-    cluster_fig = px.scatter(df, x="Study_Hours_Per_Day", y="Stress_Level_Num", color="Cluster", 
+    cluster_fig = px.scatter(df, x="Study_Hours_Per_Day", y="Stress_Level_Num", color="Cluster",
                              title="K-Means Clustering: Study Hours vs Stress Level")
     cluster_json = json.dumps(cluster_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Decision Tree Classification: Classify students based on Stress Level
+    # Decision Tree Classification
     X = df[['Study_Hours_Per_Day', 'Sleep_Hours_Per_Day', 'Social_Hours_Per_Day', 'Physical_Activity_Hours_Per_Day']]
-    y = df['Stress_Level_Num']  # Use the numerical stress level column
+    y = df['Stress_Level_Num']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     tree = DecisionTreeClassifier(random_state=42)
     tree.fit(X_train, y_train)
@@ -73,58 +97,78 @@ def analytics():
     classification_result = f"Decision Tree Accuracy: {accuracy:.2f}"
 
     # Create visualizations
-    # Heatmap
     heatmap_fig = px.density_heatmap(df, x="Study_Hours_Per_Day", y="GPA", title="Study Hours vs GPA")
-    heatmap_json = json.dumps(heatmap_fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-    # Bar Chart
     bar_fig = px.bar(df, x="Stress_Level", y="GPA", title="Stress Level vs GPA")
-    bar_json = json.dumps(bar_fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-    # Pie Chart
     pie_fig = px.pie(df, names="Stress_Level", title="Stress Level Distribution")
-    pie_json = json.dumps(pie_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    return render_template('analytics.html', 
-                          heatmap_json=heatmap_json, 
-                          bar_json=bar_json, 
-                          pie_json=pie_json, 
+    return render_template('analytics.html',
+                          heatmap_json=json.dumps(heatmap_fig, cls=plotly.utils.PlotlyJSONEncoder),
+                          bar_json=json.dumps(bar_fig, cls=plotly.utils.PlotlyJSONEncoder),
+                          pie_json=json.dumps(pie_fig, cls=plotly.utils.PlotlyJSONEncoder),
                           cluster_json=cluster_json,
                           regression_result=regression_result,
-                          classification_result=classification_result)
+                          classification_result=classification_result,
+                          df_json=df.to_json(orient='records'))  
 
 @app.route('/data')
 def data():
+    # Select only numeric columns for spider chart
+    numeric_df = df.select_dtypes(include=['float64', 'int64'])
+
     # Create visualizations
-    # Pie Chart: Stress Level Distribution
-    pie_fig = px.pie(df, names="Stress_Level", title="Stress Level Distribution")
-    pie_json = json.dumps(pie_fig, cls=plotly.utils.PlotlyJSONEncoder)
+    # Spider Chart (Radar Chart)
+    spider_fig = px.line_polar(numeric_df, r=numeric_df.mean(), theta=numeric_df.columns, line_close=True,
+                               title="Spider Chart: Feature Averages", color_discrete_sequence=px.colors.qualitative.Plotly)
+    spider_json = json.dumps(spider_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Bar Chart: Study Hours vs GPA
-    bar_fig = px.bar(df, x="Study_Hours_Per_Day", y="GPA", title="Study Hours vs GPA")
-    bar_json = json.dumps(bar_fig, cls=plotly.utils.PlotlyJSONEncoder)
+    # Pair Plot (Scatterplot Matrix)
+    pair_plot_fig = px.scatter_matrix(df,
+                                      dimensions=["Study_Hours_Per_Day", "Sleep_Hours_Per_Day", "GPA"],
+                                      color="Stress_Level",
+                                      title="Pair Plot (Scatterplot Matrix)",
+                                      color_discrete_sequence=px.colors.qualitative.Pastel)
+    pair_plot_json = json.dumps(pair_plot_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Scatter Plot: Study Hours vs GPA (Colored by Stress Level)
-    scatter_fig = px.scatter(df, x="Study_Hours_Per_Day", y="GPA", color="Stress_Level", 
-                             title="Study Hours vs GPA (Colored by Stress Level)")
-    scatter_json = json.dumps(scatter_fig, cls=plotly.utils.PlotlyJSONEncoder)
+    # Box Plot: Distribution of GPA by Stress Level
+    box_plot_fig = px.box(df,
+                          x="Stress_Level",
+                          y="GPA",
+                          title="GPA Distribution by Stress Level",
+                          color="Stress_Level",
+                          color_discrete_sequence=px.colors.qualitative.Pastel)
+    box_plot_json = json.dumps(box_plot_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Heatmap: Study Hours vs Sleep Hours vs GPA
-    heatmap_fig = px.density_heatmap(
-        df, 
-        x="Study_Hours_Per_Day", 
-        y="Sleep_Hours_Per_Day", 
-        z="GPA", 
-        title="Study Hours vs Sleep Hours vs GPA",
-        color_continuous_scale="Viridis"  
-    )
-    heatmap_json = json.dumps(heatmap_fig, cls=plotly.utils.PlotlyJSONEncoder)
+    # Density Plot: Distribution of Study Hours
+    density_plot_fig = px.density_contour(df,
+                                          x="Study_Hours_Per_Day",
+                                          title="Density Plot of Study Hours",
+                                          color_discrete_sequence=px.colors.sequential.Plasma)
+    density_plot_json = json.dumps(density_plot_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    return render_template('data.html', 
-                           pie_json=pie_json, 
-                           bar_json=bar_json, 
-                           scatter_json=scatter_json,
-                           heatmap_json=heatmap_json)
+    # 3D Scatter Plot: Study Hours, Sleep Hours, and GPA
+    scatter_3d_fig = px.scatter_3d(df,
+                                   x="Study_Hours_Per_Day",
+                                   y="Sleep_Hours_Per_Day",
+                                   z="GPA",
+                                   color="Stress_Level",
+                                   title="3D Scatter Plot: Study Hours, Sleep Hours, and GPA",
+                                   color_continuous_scale="Viridis")
+    scatter_3d_json = json.dumps(scatter_3d_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    # Pass the dataset as JSON to the template
+    df_json = df.to_json(orient='records')
+
+    # List of numeric columns for the spider chart dropdown
+    numeric_columns = numeric_df.columns.tolist()
+
+    return render_template('data.html',
+                           spider_json=spider_json,
+                           pair_plot_json=pair_plot_json,
+                           box_plot_json=box_plot_json,
+                           density_plot_json=density_plot_json,
+                           scatter_3d_json=scatter_3d_json,
+                           df_json=df_json,
+                           numeric_columns=numeric_columns)
     
 
 @app.route('/prediction', methods=['GET', 'POST'])
@@ -138,20 +182,19 @@ def prediction():
         physical_activity_hours = float(request.form['physical_activity_hours'])
 
         # Map stress level to numerical value
-        stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
         stress_level_num = stress_level_map[stress_level]
 
         # Make prediction with the 5 features
         input_data = [[study_hours, sleep_hours, social_hours, stress_level_num, physical_activity_hours]]
-        prediction = model.predict(input_data)
-        
-        # Determine pass/fail
-        result = "Pass" if prediction[0] == 1 else "Fail"
+        if model:
+            prediction = model.predict(input_data)
+            result = "Pass" if prediction[0] == 1 else "Fail"
+        else:
+            result = "Error: Model not loaded."
 
         return render_template('prediction.html', result=result)
 
     return render_template('prediction.html')
-
 
 @app.route('/stress-prediction', methods=['GET', 'POST'])
 def stress_prediction():
@@ -164,15 +207,14 @@ def stress_prediction():
         physical_activity_hours = float(request.form['physical_activity_hours'])
 
         cl_model = request.form['Classification_Model']
-        model = cl_model_dict[cl_model]
-        
-        # Make prediction with the 5 features
-        input_data = [[study_hours, sleep_hours, social_hours, gpa, physical_activity_hours]]
-        prediction = model.predict(input_data)[0]
-        
-        # # Determine pass/fail
-        stress = {0: "Low", 1:'Moderate', 2:'High'}
-        result = stress[prediction]
+        if cl_model in cl_model_dict:
+            model = cl_model_dict[cl_model]
+            input_data = [[study_hours, sleep_hours, social_hours, gpa, physical_activity_hours]]
+            prediction = model.predict(input_data)[0]
+            stress = {0: "Low", 1: 'Moderate', 2: 'High'}
+            result = stress[prediction]
+        else:
+            result = "Error: Model not found."
 
         return render_template('prediction_classification.html', result=result)
 

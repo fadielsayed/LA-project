@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data</title>
+    <title>Data Visualizations</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>DATA DETECTIVES</h1>
+    <!-- Header -->
+    <header class="sticky-header">
+        <h1>
+            <img src="{{ url_for('static', filename='data-detectives-logo.png') }}" alt="Logo"> 
+            DATA DETECTIVES
+        </h1>
         <nav>
             <ul>
                 <li><a href="{{ url_for('index') }}">Home</a></li>
@@ -20,56 +24,171 @@
             </ul>
         </nav>
     </header>
+
+    <!-- Main Content -->
     <main>
         <section class="data-overview">
-            <h2>Data Page</h2>
-            <div class="chart-grid">
-                <!-- Row 1 -->
+            <h2>Data Visualizations</h2>
+            <div class="horizontal-charts">
+                <!-- Spider Chart -->
                 <div class="chart-container">
-                    <div class="chart" id="pie"></div>
-                    <p class="chart-description">
-                        <strong>Stress Level Distribution:</strong> This pie chart shows the proportion of students with Low, Moderate, and High stress levels.
-                    </p>
-                </div>
-                <div class="chart-container">
-                    <div class="chart" id="bar"></div>
-                    <p class="chart-description">
-                        <strong>Study Hours vs GPA:</strong> This bar chart shows how the number of study hours per day relates to students' GPA.
+                    <h3>Spider Chart: Feature Averages</h3>
+                    <div id="spider" class="chart"></div>
+                    <select id="spider-dropdown" class="chart-dropdown">
+                        {% for column in numeric_columns %}
+                            <option value="{{ column }}">{{ column }}</option>
+                        {% endfor %}
+                    </select>
+                    <p class="chart-explanation">
+                        The spider chart (radar chart) visualizes the average values of numeric features. Use the dropdown to select a feature and update the chart.
                     </p>
                 </div>
 
-                <!-- Row 2 -->
+                <!-- Pair Plot -->
                 <div class="chart-container">
-                    <div class="chart" id="scatter"></div>
-                    <p class="chart-description">
-                        <strong>Study Hours vs GPA (Colored by Stress Level):</strong> This scatter plot shows the relationship between study hours and GPA, with points colored by stress level. It helps identify patterns between study habits, stress, and academic performance.
+                    <h3>Pair Plot (Scatterplot Matrix)</h3>
+                    <div id="pair-plot" class="chart"></div>
+                    <select id="pair-plot-dropdown" class="chart-dropdown">
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                        <option value="GPA">GPA</option>
+                    </select>
+                    <p class="chart-explanation">
+                        The pair plot shows relationships between multiple features. Use the dropdown to select a feature for the x-axis.
                     </p>
                 </div>
+
+                <!-- Box Plot -->
                 <div class="chart-container">
-                    <div class="chart" id="heatmap"></div>
-                    <p class="chart-description">
-                        <strong>Study Hours vs Sleep Hours vs GPA:</strong> This heatmap shows how study hours and sleep hours interact to influence GPA. Darker colors represent higher GPA values, helping to identify optimal study and sleep patterns.
+                    <h3>GPA Distribution by Stress Level</h3>
+                    <div id="box-plot" class="chart"></div>
+                    <select id="box-plot-dropdown" class="chart-dropdown">
+                        <option value="GPA">GPA</option>
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                    </select>
+                    <p class="chart-explanation">
+                        The box plot displays the distribution of GPA across different stress levels. Use the dropdown to switch between features.
+                    </p>
+                </div>
+
+                <!-- Density Plot -->
+                <div class="chart-container">
+                    <h3>Density Plot of Study Hours</h3>
+                    <div id="density-plot" class="chart"></div>
+                    <select id="density-plot-dropdown" class="chart-dropdown">
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                    </select>
+                    <p class="chart-explanation">
+                        The density plot shows the distribution of study hours. Use the dropdown to visualize other features.
+                    </p>
+                </div>
+
+                <!-- 3D Scatter Plot -->
+                <div class="chart-container">
+                    <h3>3D Scatter Plot: Study Hours, Sleep Hours, and GPA</h3>
+                    <div id="scatter-3d" class="chart"></div>
+                    <select id="scatter-3d-dropdown" class="chart-dropdown">
+                        <option value="Study_Hours_Per_Day">Study Hours</option>
+                        <option value="Sleep_Hours_Per_Day">Sleep Hours</option>
+                        <option value="GPA">GPA</option>
+                    </select>
+                    <p class="chart-explanation">
+                        The 3D scatter plot visualizes the relationship between study hours, sleep hours, and GPA. Use the dropdown to switch between features.
                     </p>
                 </div>
             </div>
         </section>
     </main>
+
     <script>
-        // Render Pie Chart
-        var pieData = {{ pie_json | safe }};
-        Plotly.newPlot('pie', pieData);
+        // Initial data for visualizations
+        const df = JSON.parse('{{ df_json | safe }}');
+        const numericColumns = {{ numeric_columns | tojson | safe }};
 
-        // Render Bar Chart
-        var barData = {{ bar_json | safe }};
-        Plotly.newPlot('bar', barData);
+        // Render the spider chart
+        let spiderData = JSON.parse('{{ spider_json | safe }}');
+        Plotly.newPlot('spider', spiderData);
 
-        // Render Scatter Plot
-        var scatterData = {{ scatter_json | safe }};
-        Plotly.newPlot('scatter', scatterData);
+        // Render the pair plot
+        let pairPlotData = JSON.parse('{{ pair_plot_json | safe }}');
+        Plotly.newPlot('pair-plot', pairPlotData);
 
-        // Render Heatmap
-        var heatmapData = {{ heatmap_json | safe }};
-        Plotly.newPlot('heatmap', heatmapData);
+        // Render the box plot
+        let boxPlotData = JSON.parse('{{ box_plot_json | safe }}');
+        Plotly.newPlot('box-plot', boxPlotData);
+
+        // Render the density plot
+        let densityPlotData = JSON.parse('{{ density_plot_json | safe }}');
+        Plotly.newPlot('density-plot', densityPlotData);
+
+        // Render the 3D scatter plot
+        let scatter3dData = JSON.parse('{{ scatter_3d_json | safe }}');
+        Plotly.newPlot('scatter-3d', scatter3dData);
+
+        // Function to update the spider chart
+        document.getElementById('spider-dropdown').addEventListener('change', function (e) {
+            const selectedFeature = e.target.value;
+            const updatedData = [{
+                r: df.map(row => row[selectedFeature]),
+                theta: numericColumns,
+                fill: 'toself',
+                type: 'scatterpolar'
+            }];
+            Plotly.react('spider', updatedData, spiderData.layout);
+        });
+
+        // Function to update the pair plot
+        document.getElementById('pair-plot-dropdown').addEventListener('change', function (e) {
+            const selectedFeature = e.target.value;
+            const updatedData = [{
+                x: df.map(row => row[selectedFeature]),
+                y: df.map(row => row['GPA']),
+                mode: 'markers',
+                type: 'scatter',
+                marker: { color: df.map(row => row['Stress_Level']) }
+            }];
+            Plotly.react('pair-plot', updatedData, pairPlotData.layout);
+        });
+
+        // Function to update the box plot
+        document.getElementById('box-plot-dropdown').addEventListener('change', function (e) {
+            const selectedFeature = e.target.value;
+            const updatedData = [{
+                y: df.map(row => row[selectedFeature]),
+                x: df.map(row => row['Stress_Level']),
+                type: 'box',
+                boxpoints: 'all',
+                jitter: 0.5,
+                pointpos: -1.8
+            }];
+            Plotly.react('box-plot', updatedData, boxPlotData.layout);
+        });
+
+        // Function to update the density plot
+        document.getElementById('density-plot-dropdown').addEventListener('change', function (e) {
+            const selectedFeature = e.target.value;
+            const updatedData = [{
+                x: df.map(row => row[selectedFeature]),
+                type: 'histogram',
+                histnorm: 'probability density'
+            }];
+            Plotly.react('density-plot', updatedData, densityPlotData.layout);
+        });
+
+        // Function to update the 3D scatter plot
+        document.getElementById('scatter-3d-dropdown').addEventListener('change', function (e) {
+            const selectedFeature = e.target.value;
+            const updatedData = [{
+                x: df.map(row => row['Study_Hours_Per_Day']),
+                y: df.map(row => row['Sleep_Hours_Per_Day']),
+                z: df.map(row => row[selectedFeature]),
+                mode: 'markers',
+                type: 'scatter3d',
+                marker: { color: df.map(row => row['Stress_Level']) }
+            }];
+            Plotly.react('scatter-3d', updatedData, scatter3dData.layout);
+        });
     </script>
 </body>
 </html>
