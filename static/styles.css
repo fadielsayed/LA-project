@@ -176,7 +176,7 @@ main {
 }
 
 .chart-container {
-    background-color: #fff;
+    background-color: #f4f4f4;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -190,14 +190,54 @@ main {
 
 .chart-dropdown {
     margin-top: 10px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 10px 12px;
+    /* Added extra padding for a better click area */
+    border: 1px solid #ccc;
+    /* Subtle border for a cleaner look */
+    border-radius: 8px;
+    /* Slightly larger radius for a smoother appearance */
     font-size: 1rem;
+    /* Maintain a readable font size */
     width: 100%;
-    max-width: 200px;
+    /* Full width for responsiveness */
+    max-width: 250px;
+    /* Adjusted max-width for better balance */
+    background-color: #f9f9f9;
+    /* Light gray background for contrast */
+    color: #333;
+    /* Dark gray text for readability */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
+    transition: all 0.3s ease;
+    /* Smooth transition for hover and focus */
+    appearance: none;
+    /* Remove default dropdown styling */
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+    /* Custom arrow */
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    cursor: pointer;
 }
 
+/* Hover and focus styles */
+.chart-dropdown:hover {
+    border-color: #4CAF50;
+    /* Green border on hover */
+    background-color: #ffffff;
+    /* Pure white background */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    /* Slightly stronger shadow */
+}
+
+.chart-dropdown:focus {
+    border-color: #4CAF50;
+    /* Green border for focus */
+    box-shadow: 0 0 6px rgba(76, 175, 80, 0.5);
+    /* Green glow */
+    outline: none;
+    /* Remove default focus outline */
+}
 /* Data Page */
 .data-overview {
     background-color: #fff;
@@ -254,3 +294,328 @@ main {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    /* White background for better contrast */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Add subtle shadow for depth */
+    border-radius: 8px;
+    /* Rounded corners for a modern look */
+    overflow: hidden;
+    /* Ensures rounded corners work with borders */
+}
+
+table th,
+table td {
+    border: 1px solid #ddd;
+    /* Light border for separation */
+    padding: 12px;
+    /* Increased padding for a cleaner layout */
+    text-align: center;
+    font-size: 1rem;
+    /* Consistent font size */
+    vertical-align: middle;
+    /* Align content vertically */
+}
+
+table th {
+    background-color: #4CAF50;
+    /* Attractive green header */
+    color: #fff;
+    /* White text for contrast */
+    font-weight: bold;
+    text-transform: uppercase;
+    /* Make header text stand out */
+    letter-spacing: 1px;
+    /* Slight letter spacing for style */
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+    /* Alternate row color for readability */
+}
+
+table tr:nth-child(odd) {
+    background-color: #fff;
+    /* Ensure rows alternate properly */
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+    /* Highlight row on hover for interactivity */
+    cursor: pointer;
+    /* Pointer cursor to indicate clickable rows */
+}
+
+table td {
+    color: #333;
+    /* Neutral text color for cells */
+}
+
+table td:last-child {
+    font-weight: bold;
+    /* Make predictions bold for emphasis */
+}
+
+table td[style*="color: green"] {
+    background-color: #e6ffe6;
+    /* Light green background for "Pass" */
+}
+
+table td[style*="color: red"] {
+    background-color: #ffe6e6;
+    /* Light red background for "Not Pass" */
+}
+
+/* Optional: Adjust table spacing on mobile screens */
+@media (max-width: 768px) {
+
+    table th,
+    table td {
+        font-size: 0.9rem;
+        /* Slightly smaller font for smaller screens */
+        padding: 8px;
+        /* Adjust padding for compact layout */
+    }
+}
+
+.table-container {
+    margin-top: 20px;
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.table-search {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease-in-out;
+}
+
+.table-search:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+form {
+    background-color: #f9f9f9;
+    /* Light gray background */
+    padding: 20px;
+    /* Space inside the form */
+    border: 1px solid #ddd;
+    /* Subtle border */
+    border-radius: 8px;
+    /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Soft shadow */
+    max-width: 400px;
+    /* Limit the form width */
+    margin: 20px auto;
+    /* Center the form on the page */
+    font-family: 'Roboto', sans-serif;
+    /* Use a modern font */
+}
+
+form label {
+    display: block;
+    /* Make the label appear on its own line */
+    font-weight: 500;
+    /* Slightly bold text */
+    margin-bottom: 8px;
+    /* Space below the label */
+    color: #333;
+    /* Dark gray text */
+}
+
+form input[type="file"] {
+    display: block;
+    /* Make the input appear on its own line */
+    margin-bottom: 16px;
+    /* Space below the file input */
+    padding: 8px;
+    /* Add padding to the input */
+    border: 1px solid #ccc;
+    /* Subtle border */
+    border-radius: 4px;
+    /* Rounded corners */
+    background-color: #fff;
+    /* White background */
+    font-size: 14px;
+    /* Adjust font size */
+    cursor: pointer;
+    /* Pointer cursor for hover */
+}
+
+form .submit-button {
+    background-color: #4CAF50;
+    /* Green background */
+    color: white;
+    /* White text */
+    padding: 10px 20px;
+    /* Vertical and horizontal padding */
+    border: none;
+    /* Remove border */
+    border-radius: 4px;
+    /* Rounded corners */
+    font-size: 16px;
+    /* Larger font size */
+    font-weight: bold;
+    /* Bold text */
+    cursor: pointer;
+    /* Pointer cursor for hover */
+    text-align: center;
+    /* Center text */
+    transition: background-color 0.3s ease;
+    /* Smooth transition on hover */
+}
+
+form .submit-button:hover {
+    background-color: #45a049;
+    /* Slightly darker green on hover */
+}
+
+form .submit-button:active {
+    background-color: #3e8e41;
+    /* Even darker green on click */
+}
+
+form .submit-button:disabled {
+    background-color: #ccc;
+    /* Gray background for disabled state */
+    cursor: not-allowed;
+    /* Not-allowed cursor */
+    color: #777;
+    /* Light gray text */
+}
+
+/* File input container */
+.file-input-wrapper {
+    display: inline-block;
+    /* Inline block to match button size */
+    position: relative;
+    /* Position relative for custom styling */
+    font-family: 'Roboto', sans-serif;
+    /* Modern font */
+}
+
+/* Hide the default file input */
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    /* Absolute positioning */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Match wrapper width */
+    height: 100%;
+    /* Match wrapper height */
+    opacity: 0;
+    /* Fully transparent */
+    cursor: pointer;
+    /* Pointer cursor for hover */
+}
+
+/* Custom button for file upload */
+.file-input-wrapper .custom-file-button {
+    background-color: #2c3e50;
+    /* Green background */
+    color: white;
+    /* White text */
+    padding: 10px 20px;
+    /* Padding for button size */
+    border: none;
+    /* Remove border */
+    border-radius: 4px;
+    /* Rounded corners */
+    font-size: 16px;
+    /* Larger font size */
+    font-weight: bold;
+    /* Bold text */
+    text-align: center;
+    /* Center text */
+    cursor: pointer;
+    /* Pointer cursor */
+    transition: background-color 0.3s ease;
+    /* Smooth transition for hover */
+}
+
+/* Hover effect for button */
+.file-input-wrapper .custom-file-button:hover {
+    background-color: #45a049;
+    /* Slightly darker green */
+}
+
+/* Active effect for button */
+.file-input-wrapper .custom-file-button:active {
+    background-color: #3e8e41;
+    /* Even darker green */
+}
+
+.prediction-result {
+    text-align: center;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prediction-result.result-pass {
+    background-color: #e8f5e9;
+    /* Light green */
+    color: #388e3c;
+    /* Dark green */
+    border: 2px solid #4caf50;
+}
+
+.prediction-result.result-fail {
+    background-color: #ffebee;
+    /* Light red */
+    color: #d32f2f;
+    /* Dark red */
+    border: 2px solid #f44336;
+}
+
+.prediction-result:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+ CSS for Styling css Copy Edit .file-input-wrapper {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+ }
+
+ .custom-file-button {
+     background-color: #4caf50;
+     color: white;
+     border: none;
+     padding: 10px 15px;
+     border-radius: 4px;
+     font-size: 1rem;
+     cursor: pointer;
+     transition: background-color 0.3s ease;
+ }
+
+ .custom-file-button:hover {
+     background-color: #45a049;
+ }
+
+ .file-name {
+     font-size: 1rem;
+     color: #333;
+     font-style: italic;
+ }
