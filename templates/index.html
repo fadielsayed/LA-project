@@ -18,6 +18,7 @@
                 <li><a href="{{ url_for('index') }}">Home</a></li>
                 <li><a href="{{ url_for('data') }}">Data</a></li>
                 <li><a href="{{ url_for('prediction') }}">GPA Prediction</a></li>
+                <li><a href="{{ url_for('bulk_prediction') }}">Group Prediction</a></li>
                 <li><a href="{{ url_for('stress_prediction') }}">Stress Prediction</a></li>
                 <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
             </ul>
@@ -31,6 +32,7 @@
         <p>Designed for students, educators, and institutions, our platform uses advanced analytics to predict student performance and identify areas for improvement.</p>
         <div class="cta-buttons">
             <a href="{{ url_for('prediction') }}" class="cta-button">GPA Prediction</a>
+            <a href="{{ url_for('bulk_prediction') }}" class="cta-button">Group Prediction</a>
             <a href="{{ url_for('stress_prediction') }}" class="cta-button">Stress Level Prediction</a>
         </div>
     </div>

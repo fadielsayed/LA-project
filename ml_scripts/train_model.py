@@ -18,7 +18,7 @@ X = df[features]
 X['Stress_Level'].fillna('Low', inplace=True)
 
 # Map 'Stress_Level' to numerical values
-stress_level_map = {'Low': 0, 'Medium': 1, 'High': 2}
+stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
 X['Stress_Level'] = X['Stress_Level'].map(stress_level_map)
 
 # Handle missing values in numerical features by filling with mean
@@ -28,7 +28,7 @@ X.fillna(X.mean(), inplace=True)
 # the target variable y is derived from the GPA column:
 # A GPA of 2.0 or higher is considered a pass (1).
 # A GPA below 2.0 is considered a fail (0).
-y = df['GPA'].apply(lambda x: 1 if x >= 2.0 else 0)  # 1 for Pass, 0 for Fail
+y = df['GPA'].apply(lambda x: 1 if x >= 3.0 else 0)  # 1 for Pass, 0 for Fail
 
 # Split the data into training and testing sets
 # The dataset is split into:
