@@ -80,6 +80,28 @@ print("Decision Tree Accuracy:", dt_acc)
 print(classification_report(y_test, dt_preds))
 
 
+results = {
+    "KNN": {
+        "Best Parameters": knn_grid.best_params_,
+        "Accuracy": knn_acc,
+    },
+    "SVC": {
+        "Best Parameters": svc_grid.best_params_,
+        "Accuracy": svc_acc,
+    },
+    "DT": {
+        "Best Parameters": dt_grid.best_params_,
+        "Accuracy": dt_acc,
+    }
+}
+
+import json
+# Write the results to a JSON file
+output_file = "models/classification_meta.json"
+with open(output_file, "w") as file:
+    json.dump(results, file, indent=4)
+
+
 # Save models
 with open('models/KNN.pkl','wb') as f:
     pickle.dump(best_knn, f)
