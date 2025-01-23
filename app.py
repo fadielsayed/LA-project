@@ -68,7 +68,7 @@ def analytics():
 @app.route('/data')
 def data():
     # Select only numeric columns for spider chart
-    numeric_df = df.select_dtypes(include=['float64', 'int64'])
+    numeric_df = df.drop(columns=['Student_ID']).select_dtypes(include=['float64', 'int64'])
 
     # Create visualizations
     # Spider Chart (Radar Chart)
