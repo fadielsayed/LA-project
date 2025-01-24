@@ -339,26 +339,27 @@ def train_station():
                     'weights': request.form["weights"],
                     'metric': request.form["metric"]
                     }
-                model , score = custom_train(input_, output_, "KNN", params)
             case "SVC":
                 params = {
                     'C': float(request.form["C"]),
                     'kernel': request.form['kernel'],
                     'gamma': request.form['gamma']
                     }
-                model , score = custom_train(input_, output_, "SVC", params)
             case "DT":
                 params = {
                     'criterion': request.form["criterion"],
                     'max_depth': int(request.form['max_depth']),
                     'min_samples_split': int(request.form['min_samples_split'])
                     }
-                model , score = custom_train(input_, output_, "DT", params)
-                
+        
+        model , score = custom_train(input_, output_, request.form["Classification_Model"], params)
         name = request.form['txtModelName']
         cl_model_dict[name] = model
-        with open(f'models/usr_models/{name}.pkl','wb') as f:
-            pickle.dump(model,f)
+
+        if(len(selected_features)==5):
+            with open(f'models/usr_models/{name}.pkl','wb') as f:
+                pickle.dump(model,f)
+
         return render_template('trainstation.html', result = str(score), 
                                model=request.form["Classification_Model"],
                                parameters=params)
