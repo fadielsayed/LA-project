@@ -11,6 +11,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, mean_squared_error
 from utils import *
+from training import *
 
 app = Flask(__name__)
 
@@ -297,8 +298,53 @@ def bulk_prediction():
                          bulk_results=bulk_results,
                          error=error)
 
+@app.route('/train-station', methods=['GET', 'POST'])
+def train_station():
+    if request.method == 'POST':
+        mapping = {'Low': 0, 'Moderate': 1, 'High': 2}
+        output_ = df["Stress_Level"].replace(mapping)
+        input_keys = {'cbStudyHours':'Study_Hours_Per_Day',
+                      'cbSleepHours':'Sleep_Hours_Per_Day',
+                      'cbSocialHours':'Social_Hours_Per_Day',
+                      'cbGPA':'GPA',
+                      'bcPhysicalHours':'Physical_Activity_Hours_Per_Day'
+                    }
+        selected_features = []
+        for key in input_keys:
+            if key in request.form:
+                selected_features.append(input_keys[key])
+        input_ = df[selected_features]
+        match request.form["Classification_Model"]:
+            case "KNN":
+                params = {
+                    'n_neighbors': int(request.form["nNeighbours"]),
+                    'weights': request.form["weights"],
+                    'metric': request.form["metric"]
+                    }
+                model , score = custom_train(input_, output_, "KNN", params)
+            case "SVC":
+                params = {
+                    'C': float(request.form["C"]),
+                    'kernel': request.form['kernel'],
+                    'gamma': request.form['gamma']
+                    }
+                model , score = custom_train(input_, output_, "SVC", params)
+            case "DT":
+                params = {
+                    'criterion': request.form["criterion"],
+                    'max_depth': int(request.form['max_depth']),
+                    'min_samples_split': int(request.form['min_samples_split'])
+                    }
+                model , score = custom_train(input_, output_, "DT", params)
+                
+                
+        return render_template('trainstation.html', result = str(score), 
+                               model=request.form["Classification_Model"],
+                               parameters=params)
+
+    return render_template('trainstation.html')
 
 if __name__ == '__main__':
     df = load_dataset()
     model, cl_model_dict = load_models()
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0',port=2000)

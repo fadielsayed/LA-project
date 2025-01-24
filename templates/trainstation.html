@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="sticky-header">
+        <h1>
+            <img src="{{ url_for('static', filename='data-detectives-logo.png') }}" alt="Logo"> 
+            DATA DETECTIVES
+        </h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('data') }}">Data</a></li>
+                <li><a href="{{ url_for('prediction') }}">GPA Prediction</a></li>
+                <li><a href="{{ url_for('bulk_prediction') }}">Group Prediction</a></li>
+                <li><a href="{{ url_for('stress_prediction') }}">Stress Prediction</a></li>
+                <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="prediction-form">
+            <h2>Train Station</h2>
+            <h3>Train your custom model here!</h3>
+            <form method="POST" class="form-grid">
+                
+                <label for="Classification_Model">Select the Classification Model:</label>
+                <select id="Classification_Model" name="Classification_Model" required onchange="updateParameters()">
+                    <option value="KNN">K-Nearest Neighbour</option>
+                    <option value="SVC">Support Vector Classification</option>
+                    <option value="DT">Decision Tree</option>
+                </select>
+
+                    <tr>
+                        <td>
+                            <div id="checkboxes">
+                                <label>Selected features:</label>
+                                
+                                <input type="checkbox" checked="checked" name="cbStudyHours">Study Hours Per Day </input></br>
+                                <input type="checkbox" checked="checked" name="cbSleepHours">Sleep Hours Per Day</input></br>
+                                <input type="checkbox" checked="checked" name="cbSocialHours">Social Hours Per Day</input></br>
+                                <input type="checkbox" checked="checked" name="cbGPA">GPA</input></br>
+                                <input type="checkbox" checked="checked" name="bcPhysicalHours">Physical Activity Hours Per Day</input></br>
+                                
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <label>Model Parameters:</label>
+                                <div id="p1">Number of neighbours:
+                                    <input name="nNeighbours" type="number" value="3" style="width: 50px; margin: 5px;height: 5px;">
+                                </div>
+                                <div id="p2">weights:
+                                    <input name="weights" type="radio" value="uniform" checked="checked">uniform</input>
+                                    <input name="weights" type="radio" value="distance">distance</input>
+                                </div>
+                                <div id="p3">Metric:
+                                    <input name="metric" type="radio" value="euclidean" checked="checked">euclidean</input>
+                                    <input name="metric" type="radio" value="manhattan">manhattan</input>
+                                </div>
+                                
+                            </div>
+                        </td>
+                    </tr>
+
+                <label for="txtModelName">Name your model: </label>
+                <input name="txtModelName">
+                <button type="submit" class="submit-button">Train</button>
+            </form>
+
+            {% if result %}
+            <div class="prediction-result">
+                <h3>Model has been successfully trained.</h3>
+                <h3><i>{{ model }}</i></h3>
+                <h3><i>{{ parameters }}</i></h3>
+                <h3>The accuracy is <i>{{ result }}</i></h3>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <script>
+        function updateParameters() {
+            // Get the selected value from the dropdown
+            const category = document.getElementById("Classification_Model").value;
+
+            // Update the labels for the checkboxes
+            const div1 = document.getElementById("p1");
+            const div2 = document.getElementById("p2");
+            const div3 = document.getElementById("p3");
+            if(category == "SVC"){
+                div1.innerHTML = 'C:<input name="C" type="text" value="1" style="width: 50px; margin: 5px;height: 5px;">';
+                div2.innerHTML = 'Kernel:<input name="kernel" type="radio" value="linear" checked="checked">linear</input><input name="kernel" type="radio" value="rbf">rbf</input><input name="kernel" type="radio" value="poly">poly</input>';
+                div3.innerHTML = 'gamma:<input name="gamma" type="radio" value="scale" checked="checked">scale</input><input name="gamma" type="radio" value="auto">auto</input>';
+            } else if (category == "KNN"){
+                div1.innerHTML = 'Number of neighbours:<input name="nNeighbours" type="number" value="3" style="width: 50px; margin: 5px;height: 5px;">'
+                div2.innerHTML = 'weights:<input name="weights" type="radio" value="uniform" checked="checked">uniform</input><input name="weights" type="radio" value="distance">distance</input>'
+                div3.innerHTML = `Metric:
+                                    <input name="metric" type="radio" value="euclidean" checked="checked">euclidean</input>
+                                    <input name="metric" type="radio" value="manhattan">manhattan</input>`
+            } else if (category == "DT"){
+                div1.innerHTML = 'max depth:<input name="max_depth" type="number" value="10" style="width: 50px; margin: 5px;height: 5px;">'
+                div2.innerHTML = 'min samples split:<input name="min_samples_split" type="number" value="2" style="width: 50px; margin: 5px;height: 5px;">'
+                div3.innerHTML = `Criterion:
+                                    <input name="criterion" type="radio" value="gini" checked="checked">gini</input>
+                                    <input name="criterion" type="radio" value="entropy">entropy</input>`
+            }
+            
+        }
+    </script>
+</body>
+</html>
