@@ -118,15 +118,14 @@ def data():
     # Create visualizations
     # Spider Chart (Radar Chart)
     spider_fig = px.line_polar(numeric_df, r=numeric_df.mean(), theta=numeric_df.columns, line_close=True,
-                               title="Spider Chart: Feature Averages", color_discrete_sequence=px.colors.qualitative.Plotly)
+                               title="Spider Chart: Feature Averages")
     spider_json = json.dumps(spider_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Pair Plot (Scatterplot Matrix)
     pair_plot_fig = px.scatter_matrix(df,
                                       dimensions=["Study_Hours_Per_Day", "Sleep_Hours_Per_Day", "GPA"],
                                       color="Stress_Level",
-                                      title="Pair Plot (Scatterplot Matrix)",
-                                      color_discrete_sequence=px.colors.qualitative.Pastel)
+                                      title="Pair Plot (Scatterplot Matrix)")
     pair_plot_json = json.dumps(pair_plot_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Box Plot: Distribution of GPA by Stress Level
@@ -184,49 +183,99 @@ def prediction():
         # Map stress level to numerical value
         stress_level_num = stress_level_map[stress_level]
 
-        # Make prediction with the 5 features
-        input_data = [[study_hours, sleep_hours, social_hours, stress_level_num, physical_activity_hours]]
+        # Create input data array in correct feature order
+        input_data = [[
+            study_hours,
+            sleep_hours,
+            social_hours,
+            stress_level_num,
+            physical_activity_hours
+        ]]
+
         if model:
+            # Make prediction
             prediction = model.predict(input_data)
             result = "Pass" if prediction[0] == 1 else "Fail"
-        else:
-            result = "Error: Model not loaded."
+            
+            # FEATURE IMPORTANCE ANALYSIS
+            importances = model.feature_importances_
+            feature_names = ['Study_Hours_Per_Day', 
+                            'Sleep_Hours_Per_Day',
+                            'Social_Hours_Per_Day', 
+                            'Stress_Level',
+                            'Physical_Activity_Hours_Per_Day']
+            
+            # Combine and sort features by importance
+            feature_importance = sorted(zip(feature_names, importances), 
+                                      key=lambda x: x[1], 
+                                      reverse=True)
+            
+            # Get most significant factor
+            most_important = feature_importance[0][0]
+            
+            # GENERATE RECOMMENDATIONS
+            recommendations = []
+            
+            # Study Hours Recommendations
+            if most_important == 'Study_Hours_Per_Day':
+                if result == 'Fail':
+                    recommendations.append("📚 Increase study time gradually (add 30-60 minutes daily)")
+                    recommendations.append("🎯 Use active recall techniques like flashcards")
+                    recommendations.append("⏱️ Implement the Pomodoro technique (25min work/5min break)")
+                else:
+                    recommendations.append("✅ Maintain your consistent study schedule")
+                    recommendations.append("💡 Focus on quality over quantity of study hours")
 
-        return render_template('prediction.html', result=result)
+            # Sleep Hours Recommendations
+            elif most_important == 'Sleep_Hours_Per_Day':
+                if result == 'Fail':
+                    recommendations.append("💤 Aim for 7-9 hours of quality sleep nightly")
+                    recommendations.append("🌙 Establish a consistent bedtime routine")
+                    recommendations.append("📵 Avoid screens 1 hour before bedtime")
+                else:
+                    recommendations.append("👍 Great sleep habits detected - keep it up!")
+                    recommendations.append("🛌 Maintain your current sleep schedule")
+
+            # Social Hours Recommendations
+            elif most_important == 'Social_Hours_Per_Day':
+                if result == 'Fail':
+                    recommendations.append("⚖️ Balance social time with academic commitments")
+                    recommendations.append("🎮 Use social activities as rewards after study sessions")
+                    recommendations.append("👥 Schedule social time in advance")
+                else:
+                    recommendations.append("🤝 Excellent social-academic balance detected")
+                    recommendations.append("👫 Maintain your current social engagement level")
+
+            # Stress Level Recommendations
+            elif most_important == 'Stress_Level':
+                if result == 'Fail':
+                    recommendations.append("🧘 Practice mindfulness meditation daily")
+                    recommendations.append("📅 Use time blocking for better task management")
+                    recommendations.append("💬 Talk to a counselor about stress management")
+                else:
+                    recommendations.append("😌 Effective stress management detected")
+                    recommendations.append("🔋 Continue your current stress-coping strategies")
+
+            # Physical Activity Recommendations
+            elif most_important == 'Physical_Activity_Hours_Per_Day':
+                if result == 'Fail':
+                    recommendations.append("🏃 Add 30 minutes of exercise 3-4 times weekly")
+                    recommendations.append("🚶 Take short activity breaks during study sessions")
+                    recommendations.append("🧘 Try yoga for combined physical/mental benefits")
+                else:
+                    recommendations.append("🏋️ Good physical activity routine detected")
+                    recommendations.append("🔥 Maintain your current exercise schedule")
+
+            return render_template('prediction.html',
+                                 result=result,
+                                 significant_factor=most_important.replace('_', ' '),
+                                 recommendations=recommendations)
+
+        else:
+            return render_template('prediction.html', 
+                                result="Error: Model not loaded")
 
     return render_template('prediction.html')
-
-# Bulk Prediction route
-
-
-@app.route('/bulk_prediction', methods=['GET', 'POST'])
-def bulk_prediction():
-    bulk_results = None
-    if 'file' in request.files:
-        file = request.files['file']
-        if file:
-            # Load CSV file
-            df = pd.read_csv(file)
-
-            # Map stress level to numeric
-            stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
-            df['Stress_Level'] = df['Stress_Level'].map(stress_level_map)
-
-            # Extract required features
-            features = ['Study_Hours_Per_Day', 'Sleep_Hours_Per_Day',
-                        'Social_Hours_Per_Day', 'Stress_Level', 'Physical_Activity_Hours_Per_Day']
-            predictions = model.predict(df[features])
-
-            # Prepare results
-            bulk_results = [{'Student_ID': row['Student_ID'], 'Study_Hours_Per_Day': row['Study_Hours_Per_Day'],
-                             'Sleep_Hours_Per_Day': row['Sleep_Hours_Per_Day'], 
-                             'Stress_Level': row['Stress_Level'],
-                             'Prediction': 'Pass' if pred == 1 else 'Fail'}
-                            for row, pred in zip(df.to_dict(orient='records'), predictions)]
-        return render_template('bulk_prediction.html', bulk_results=bulk_results)
-    
-    return render_template('bulk_prediction.html')
-
 
 @app.route('/stress-prediction', methods=['GET', 'POST'])
 def stress_prediction():
@@ -251,6 +300,48 @@ def stress_prediction():
         return render_template('prediction_classification.html', result=result)
 
     return render_template('prediction_classification.html')
+
+
+@app.route('/bulk_prediction', methods=['GET', 'POST'])
+def bulk_prediction():
+    bulk_results = None
+    error = None
+    if request.method == 'POST' and 'file' in request.files:
+        file = request.files['file']
+        if file.filename != '':
+            try:
+                # Load and process CSV
+                df = pd.read_csv(file)
+                if 'Stress_Level' in df.columns:
+                    df['Stress_Level'] = df['Stress_Level'].map(stress_level_map)
+                
+                # Validate required columns
+                required_columns = ['Study_Hours_Per_Day', 'Sleep_Hours_Per_Day',
+                                   'Social_Hours_Per_Day', 'Stress_Level',
+                                   'Physical_Activity_Hours_Per_Day']
+                
+                if not all(col in df.columns for col in required_columns):
+                    raise ValueError("CSV missing required columns")
+
+                # Make predictions
+                predictions = model.predict(df[required_columns])
+                
+                # Prepare results
+                bulk_results = [{
+                    'Student_ID': row.get('Student_ID', 'N/A'),
+                    'Study_Hours': row['Study_Hours_Per_Day'],
+                    'Sleep_Hours': row['Sleep_Hours_Per_Day'],
+                    'Stress_Level': row['Stress_Level'],
+                    'Prediction': 'Pass' if pred == 1 else 'Fail'
+                } for row, pred in zip(df.to_dict(orient='records'), predictions)]
+                
+            except Exception as e:
+                error = f"Error processing file: {str(e)}"
+    
+    return render_template('bulk_prediction.html',
+                         bulk_results=bulk_results,
+                         error=error)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

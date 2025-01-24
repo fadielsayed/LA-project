@@ -51,8 +51,28 @@
             </form>
 
             {% if result %}
-            <div class="prediction-result {% if result == 'Pass' %}result-pass{% else %}result-fail{% endif %}">
-                <h3>Prediction Result: {{ result }}</h3>
+            <div class="result-container">
+                <div class="prediction-result {% if result == 'Pass' %}result-pass{% else %}result-fail{% endif %}">
+                    <h3>Prediction Result: {{ result }}</h3>
+                </div>
+
+                {% if significant_factor and recommendations %}
+                <div class="analysis-box">
+                    <div class="key-factor">
+                        <h4>🎯 Most Influential Factor</h4>
+                        <p class="factor-badge">{{ significant_factor }}</p>
+                    </div>
+                    
+                    <div class="recommendations">
+                        <h4>📝 Personalized Recommendations</h4>
+                        <ul>
+                            {% for recommendation in recommendations %}
+                            <li>{{ recommendation }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
         </section>

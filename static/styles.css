@@ -619,3 +619,134 @@ form .submit-button:disabled {
      color: #333;
      font-style: italic;
  }
+ /* Bulk Prediction Styles */
+.bulk-prediction {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.results-table {
+    margin-top: 30px;
+    overflow-x: auto;
+}
+
+.results-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.results-table th {
+    background-color: #2c3e50;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.results-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.results-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.result-pass {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.result-fail {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.result-container {
+    margin-top: 2rem;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.prediction-result {
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.result-pass {
+    background-color: #d4edda;
+    border: 2px solid #28a745;
+    color: #155724;
+}
+
+.result-fail {
+    background-color: #f8d7da;
+    border: 2px solid #dc3545;
+    color: #721c24;
+}
+
+.analysis-box {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.key-factor {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.factor-badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: #007bff;
+    color: white;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.recommendations h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.recommendations ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.recommendations li {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.recommendations li:hover {
+    transform: translateX(10px);
+    background: #e9ecef;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
