@@ -5,6 +5,14 @@ import pandas as pd
 # Stress level mapping
 stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
 
+def clean_usr_models():
+    for filename in os.listdir('models/usr_models/'):
+        file_path = os.path.join('models/usr_models/', filename)
+        # Remove only files, skip directories
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+    
+
 def load_dataset():
         # Load the dataset
     data_path = os.path.join('data', 'student_lifestyle_dataset.csv')

@@ -235,6 +235,9 @@ def prediction():
 
 @app.route('/stress-prediction', methods=['GET', 'POST'])
 def stress_prediction():
+    list_models = []
+    for filename in os.listdir('models/usr_models/'):
+        list_models.append(filename.split('.')[0])
     if request.method == 'POST':
         # Get form data
         study_hours = float(request.form['study_hours'])
@@ -244,18 +247,33 @@ def stress_prediction():
         physical_activity_hours = float(request.form['physical_activity_hours'])
 
         cl_model = request.form['Classification_Model']
-        if cl_model in cl_model_dict:
+        if cl_model == "ALL":
+            results = []
+            for c in cl_model_dict:
+                model = cl_model_dict[c]
+                input_data = [[study_hours, sleep_hours, social_hours, gpa, physical_activity_hours]]
+                prediction = model.predict(input_data)[0]
+                stress = {0: "Low", 1: 'Moderate', 2: 'High'}
+                result = f"{c}: {stress[prediction]}"
+                results.append(result)
+            return render_template('prediction_classification.html',
+                               items=list_models,
+                                results=results)
+        else:
             model = cl_model_dict[cl_model]
             input_data = [[study_hours, sleep_hours, social_hours, gpa, physical_activity_hours]]
             prediction = model.predict(input_data)[0]
             stress = {0: "Low", 1: 'Moderate', 2: 'High'}
             result = stress[prediction]
-        else:
-            result = "Error: Model not found."
 
-        return render_template('prediction_classification.html', result=result)
 
-    return render_template('prediction_classification.html')
+        return render_template('prediction_classification.html',
+                               items=list_models,
+                                result=result)
+
+
+
+    return render_template('prediction_classification.html', items=list_models)
 
 
 @app.route('/bulk_prediction', methods=['GET', 'POST'])
@@ -337,7 +355,10 @@ def train_station():
                     }
                 model , score = custom_train(input_, output_, "DT", params)
                 
-                
+        name = request.form['txtModelName']
+        cl_model_dict[name] = model
+        with open(f'models/usr_models/{name}.pkl','wb') as f:
+            pickle.dump(model,f)
         return render_template('trainstation.html', result = str(score), 
                                model=request.form["Classification_Model"],
                                parameters=params)
@@ -345,6 +366,7 @@ def train_station():
     return render_template('trainstation.html')
 
 if __name__ == '__main__':
+    clean_usr_models()
     df = load_dataset()
     model, cl_model_dict = load_models()
     app.run(debug=True,host='0.0.0.0',port=2000)
