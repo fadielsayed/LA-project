@@ -354,9 +354,9 @@ def train_station():
         
         model , score = custom_train(input_, output_, request.form["Classification_Model"], params)
         name = request.form['txtModelName']
-        cl_model_dict[name] = model
 
         if(len(selected_features)==5):
+            cl_model_dict[name] = model
             with open(f'models/usr_models/{name}.pkl','wb') as f:
                 pickle.dump(model,f)
 
