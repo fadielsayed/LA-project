@@ -45,10 +45,16 @@
 
                 <label for="Classification_Model">Select the Classification Model:</label>
                 <select id="Classification_Model" name="Classification_Model" required>
-                    <option value="KNN">K-Nearest Neighbour</option>
-                    <option value="SVC">Support Vector Classification</option>
-                    <option value="DT">Decision Tree</option>
+                    <option value="ALL">Select All</option>
+                    <option value="KNN">K-Nearest Neighbour(default)</option>
+                    <option value="SVC">Support Vector Classification(default)</option>
+                    <option value="DT">Decision Tree(default)</option>
+                    {% for item in items %}
+                    <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
                 </select>
+
+
 
                 <button type="submit" class="submit-button">Predict</button>
             </form>
@@ -58,6 +64,18 @@
                 <h3>Predicted Stress Level: <i>{{ result }}</i></h3>
             </div>
             {% endif %}
+            
+            {% if results %}
+            <div class="prediction-result">
+            <h3>Predicted Stress Levels: </h3>
+            {% for res in results %}
+                <i>{{ res }}</i></br>
+            {% endfor %}
+            </div>
+
+            {% endif %}
+
+
         </section>
     </main>
 </body>
