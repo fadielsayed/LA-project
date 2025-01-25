@@ -750,3 +750,31 @@ form .submit-button:disabled {
     to { opacity: 1; transform: translateY(0); }
 }
 
+.prediction2-result {
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.result-high {
+    background-color: #f8d7da;
+    border: 2px solid #dc3545;
+    color: #721c24;
+}
+
+.result-moderate {
+    background-color: #fff3cd;
+    border: 2px solid #ffc107;
+    color: #856404;
+}
+
+.result-low {
+    background-color: #d4edda;
+    border: 2px solid #28a745;
+    color: #155724;
+}
+

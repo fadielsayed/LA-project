@@ -279,42 +279,31 @@ def stress_prediction():
 @app.route('/bulk_prediction', methods=['GET', 'POST'])
 def bulk_prediction():
     bulk_results = None
-    error = None
-    if request.method == 'POST' and 'file' in request.files:
+    if 'file' in request.files:
         file = request.files['file']
-        if file.filename != '':
-            try:
-                # Load and process CSV
-                df = pd.read_csv(file)
-                if 'Stress_Level' in df.columns:
-                    df['Stress_Level'] = df['Stress_Level'].map(stress_level_map)
-                
-                # Validate required columns
-                required_columns = ['Study_Hours_Per_Day', 'Sleep_Hours_Per_Day',
-                                   'Social_Hours_Per_Day', 'Stress_Level',
-                                   'Physical_Activity_Hours_Per_Day']
-                
-                if not all(col in df.columns for col in required_columns):
-                    raise ValueError("CSV missing required columns")
+        if file:
+            # Load CSV file
+            df = pd.read_csv(file)
 
-                # Make predictions
-                predictions = model.predict(df[required_columns])
-                
-                # Prepare results
-                bulk_results = [{
-                    'Student_ID': row.get('Student_ID', 'N/A'),
-                    'Study_Hours': row['Study_Hours_Per_Day'],
-                    'Sleep_Hours': row['Sleep_Hours_Per_Day'],
-                    'Stress_Level': row['Stress_Level'],
-                    'Prediction': 'Pass' if pred == 1 else 'Fail'
-                } for row, pred in zip(df.to_dict(orient='records'), predictions)]
-                
-            except Exception as e:
-                error = f"Error processing file: {str(e)}"
-    
-    return render_template('bulk_prediction.html',
-                         bulk_results=bulk_results,
-                         error=error)
+            # Map stress level to numeric
+            stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
+            df['Stress_Level'] = df['Stress_Level'].map(stress_level_map)
+
+            # Extract required features
+            features = ['Study_Hours_Per_Day', 'Sleep_Hours_Per_Day',
+                        'Social_Hours_Per_Day', 'Stress_Level', 'Physical_Activity_Hours_Per_Day']
+            predictions = model.predict(df[features])
+
+            # Prepare results
+            bulk_results = [{'Student_ID': row['Student_ID'], 'Study_Hours_Per_Day': row['Study_Hours_Per_Day'],
+                             'Sleep_Hours_Per_Day': row['Sleep_Hours_Per_Day'],
+                             'Stress_Level': row['Stress_Level'],
+                             'Prediction': 'Pass' if pred == 1 else 'Fail'}
+                            for row, pred in zip(df.to_dict(orient='records'), predictions)]
+        return render_template('bulk_prediction.html', bulk_results=bulk_results)
+
+    return render_template('bulk_prediction.html')
+
 
 @app.route('/train-station', methods=['GET', 'POST'])
 def train_station():
