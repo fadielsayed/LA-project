@@ -1,6 +1,11 @@
 import os 
 import pickle
 import pandas as pd
+import numpy as np 
+import plotly
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+import json
 
 # Stress level mapping
 stress_level_map = {'Low': 0, 'Moderate': 1, 'High': 2}
@@ -62,3 +67,40 @@ def load_models():
 
 
     return model, cl_model_dict
+
+def get_decisionBoundaries(model,features,X,y):
+    # Create a mesh grid
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
+                        np.arange(y_min, y_max, 0.01))
+    
+    # Predict on the mesh grid
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+
+    # Create a heatmap with Plotly
+    decision_boundary_fig = go.Figure(data=go.Contour(
+        z=Z,
+        x=np.arange(x_min, x_max, 0.01),  # x-coordinates
+        y=np.arange(y_min, y_max, 0.01),  # y-coordinates
+        contours_coloring='heatmap',
+        colorbar=dict(title="Class")
+    ))
+
+    # Add scatter points for the dataset
+    decision_boundary_fig.add_trace(go.Scatter(
+        x=X[:, 0],
+        y=X[:, 1],
+        mode='markers',
+        marker=dict(color=y, colorscale='Viridis', size=8, line=dict(color='black', width=1)),
+        name='Data Points'
+    ))
+
+    decision_boundary_fig.update_layout(
+        title="Decision Boundary",
+        xaxis_title=features[0],
+        yaxis_title=features[1],
+    )
+
+    return json.dumps(decision_boundary_fig,cls=plotly.utils.PlotlyJSONEncoder)

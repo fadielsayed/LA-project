@@ -6,6 +6,7 @@
     <title>Stress Prediction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
     <header class="sticky-header">
@@ -78,16 +79,44 @@
 
             {% if result %}
             <div class="prediction-result">
-                <h3>Model has been successfully trained.</h3>
-                <h3><i>{{ model }}</i></h3>
-                <h3><i>{{ parameters }}</i></h3>
-                <h3>The accuracy is <i>{{ result }}</i></h3>
+                <table>
+                    <tr>
+                        <th colspan="2">
+                            Training Results
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>Algorithm</td>
+                        <td><i>{{ model }}</i></td>
+                    </tr>
+                    <tr>
+                        <td>Accuracy</td>
+                        <td><i>{{ result }}</i></td>
+                    </tr>
+                    {% for param in parameters %}
+                    <tr>
+                        <td><i>{{ param }}</i></td>
+                        <td><i>{{ parameters[param] }}</i></td>
+                    </tr>
+                    {% endfor %}
+                </table>
             </div>
-            {% endif %}
+            {% endif %}   
+            
+            {% if fig_json %}
+            <div class="chart-container">
+                <div class="chart" id="heatmap"></div>
+            </div>
+            {% endif %}   
+
         </section>
     </main>
 
     <script>
+        // Render the plot
+        let plot_ = JSON.parse('{{ fig_json | safe }}');
+        Plotly.newPlot('heatmap', plot_);
+
         function updateParameters() {
             // Get the selected value from the dropdown
             const category = document.getElementById("Classification_Model").value;

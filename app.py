@@ -352,17 +352,27 @@ def train_station():
                     'min_samples_split': int(request.form['min_samples_split'])
                     }
         
-        model , score = custom_train(input_, output_, request.form["Classification_Model"], params)
-        name = request.form['txtModelName']
+        model , score = custom_train(input_.to_numpy(), output_.to_numpy(), request.form["Classification_Model"], params)
 
+        #plot decision boundaries
+        fig_json=None
+        if(len(selected_features)==2):
+            fig_json = get_decisionBoundaries(model,selected_features,input_.to_numpy(),output_.to_numpy())
+        
+        #save to use in stress prediction
         if(len(selected_features)==5):
+            name = request.form['txtModelName']
+            if(len(name) == 0):
+                name="cl_model"
+
             cl_model_dict[name] = model
             with open(f'models/usr_models/{name}.pkl','wb') as f:
                 pickle.dump(model,f)
 
         return render_template('trainstation.html', result = str(score), 
                                model=request.form["Classification_Model"],
-                               parameters=params)
+                               parameters=params,
+                               fig_json = fig_json)
 
     return render_template('trainstation.html')
 
