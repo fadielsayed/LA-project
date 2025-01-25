@@ -151,7 +151,10 @@
                 type: 'scatter',
                 marker: { color: df.map(row => row['Stress_Level']) }
             }];
-            Plotly.react('pair-plot', updatedData, pairPlotData.layout);
+            Plotly.react('pair-plot', updatedData, {
+                          xaxis: { title: selectedFeature },
+                         yaxis: { title: 'GPA' }
+                        });
         });
 
         // Function to update the box plot
@@ -165,7 +168,10 @@
                 jitter: 0.5,
                 pointpos: -1.8
             }];
-            Plotly.react('box-plot', updatedData, boxPlotData.layout);
+            Plotly.react('box-plot', updatedData, {
+                          xaxis: { title: 'Stress_Level' },
+                         yaxis: { title: selectedFeature }
+                        });
         });
 
         // Function to update the density plot
