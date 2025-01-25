@@ -135,7 +135,10 @@
                         x: df.map(d => d[xAttr]),
                         y: df.map(d => d[yAttr]),
                         type: 'bar'
-                    }]);
+                    }],  {
+                            xaxis: { title: xAttr },
+                            yaxis: { title: yAttr }
+                        });
                     break;
                 case 'pie':
                     const pieAttr = document.getElementById('pie-dropdown').value;
@@ -143,7 +146,10 @@
                         values: df.map(d => d[pieAttr]),
                         labels: df.map(d => d[pieAttr]),
                         type: 'pie'
-                    }]);
+                    }], {
+                          xaxis: { title: xAttr },
+                         yaxis: { title: yAttr }
+                        });
                     break;
                 case 'cluster':
                     xAttr = document.getElementById('cluster-x-dropdown').value;
@@ -154,7 +160,12 @@
                         mode: 'markers',
                         type: 'scatter',
                         marker: { color: df.map(d => d.Cluster) }
-                    }]);
+                    }],
+                        {
+                          xaxis: { title: xAttr },
+                         yaxis: { title: yAttr }
+                        }
+                    );
                     break;
             }
         }
