@@ -377,6 +377,8 @@ def train_station():
     return render_template('trainstation.html')
 
 if __name__ == '__main__':
+    if(not os.path.exists('models/usr_models')):
+        os.mkdir('models/usr_models')
     clean_usr_models()
     df = load_dataset()
     model, cl_model_dict = load_models()
