@@ -60,11 +60,13 @@
 
                 <button type="submit" class="submit-button">Predict</button>
             </form>
+            <br/>
 
-            {% if result %}
-            <div class="prediction-result">
-                <h3>Predicted Stress Level: <i>{{ result }}</i></h3>
-            </div>
+           {% if result %}
+                <div class="prediction2-result 
+                    {% if result == 'High' %}result-high{% elif result == 'Moderate' %}result-moderate{% else %}result-low{% endif %}">
+                        <h3>Predicted Stress Level: <i>{{ result }}</i></h3>
+                </div>
             {% endif %}
             
             {% if results %}
