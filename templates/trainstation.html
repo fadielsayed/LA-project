@@ -32,7 +32,6 @@
             <h2>Train Station</h2>
             <h3>Train your custom model here!</h3>
             <form method="POST" class="form-grid">
-                
                 <label for="Classification_Model">Select the Classification Model:</label>
                 <select id="Classification_Model" name="Classification_Model" required onchange="updateParameters()">
                     <option value="KNN">K-Nearest Neighbour</option>
@@ -40,42 +39,38 @@
                     <option value="DT">Decision Tree</option>
                 </select>
 
-                    <tr>
-                        <td>
-                            <div id="checkboxes">
-                                <label>Selected features:</label>
-                                
-                                <input type="checkbox" checked="checked" name="cbStudyHours">Study Hours Per Day </input></br>
-                                <input type="checkbox" checked="checked" name="cbSleepHours">Sleep Hours Per Day</input></br>
-                                <input type="checkbox" checked="checked" name="cbSocialHours">Social Hours Per Day</input></br>
-                                <input type="checkbox" checked="checked" name="cbGPA">GPA</input></br>
-                                <input type="checkbox" checked="checked" name="bcPhysicalHours">Physical Activity Hours Per Day</input></br>
-                                
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <label>Model Parameters:</label>
-                                <div id="p1">Number of neighbours:
-                                    <input name="nNeighbours" type="number" value="3" style="width: 50px; margin: 5px;height: 5px;">
-                                </div>
-                                <div id="p2">weights:
-                                    <input name="weights" type="radio" value="uniform" checked="checked">uniform</input>
-                                    <input name="weights" type="radio" value="distance">distance</input>
-                                </div>
-                                <div id="p3">Metric:
-                                    <input name="metric" type="radio" value="euclidean" checked="checked">euclidean</input>
-                                    <input name="metric" type="radio" value="manhattan">manhattan</input>
-                                </div>
-                                
-                            </div>
-                        </td>
-                    </tr>
+                <div class="checkboxes">
+                    <label class="section-label">Selected Features:</label>
+                    <label><input type="checkbox" checked="checked" name="cbStudyHours"> Study Hours Per Day</label>
+                    <label><input type="checkbox" checked="checked" name="cbSleepHours"> Sleep Hours Per Day</label>
+                    <label><input type="checkbox" checked="checked" name="cbSocialHours"> Social Hours Per Day</label>
+                    <label><input type="checkbox" checked="checked" name="cbGPA"> GPA</label>
+                    <label><input type="checkbox" checked="checked" name="bcPhysicalHours"> Physical Activity Hours Per Day</label>
+                </div>
 
-                <label for="txtModelName">Name your model: </label>
+                <div class="model-parameters">
+                    <label class="section-label">Model Parameters:</label>
+                    <div class="parameter-group">
+                        <label for="nNeighbours">Number of Neighbours:</label>
+                        <input name="nNeighbours" type="number" value="3">
+                    </div>
+                    <div class="parameter-group">
+                        <label>Weights:</label>
+                        <label><input name="weights" type="radio" value="uniform" checked="checked"> Uniform</label>
+                        <label><input name="weights" type="radio" value="distance"> Distance</label>
+                    </div>
+                    <div class="parameter-group">
+                        <label>Metric:</label>
+                        <label><input name="metric" type="radio" value="euclidean" checked="checked"> Euclidean</label>
+                        <label><input name="metric" type="radio" value="manhattan"> Manhattan</label>
+                    </div>
+                </div>
+
+                <label for="txtModelName">Name your model:</label>
                 <input name="txtModelName" required>
                 <button type="submit" class="submit-button">Train</button>
             </form>
+
 
             {% if result %}
             <div class="prediction-result">
