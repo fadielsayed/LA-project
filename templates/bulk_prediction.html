@@ -65,14 +65,14 @@
         <!-- Bulk Prediction Section -->
         <section class="bulk-prediction">
             <h2>Bulk Prediction</h2>
-            <form method="POST" enctype="multipart/form-data" action="{{ url_for('bulk_prediction') }}">
+            <form method="POST" class="form-grid" enctype="multipart/form-data" action="{{ url_for('bulk_prediction') }}">
                 <label for="file">Upload CSV File:</label>
+                <br/>
                 <div class="file-input-wrapper">
                     <button type="button" class="custom-file-button">Choose File</button>
                     <input type="file" id="file" name="file" accept=".csv" required onchange="updateFileName()">
-                    <span id="file-name" class="file-name">No file chosen</span>
+                    <span id="file-name" class="file-name">No file chosen</span>   
                 </div>
-                <br/>
                 <br/>
                 <button type="submit" class="submit-button">Predict</button>
             </form>

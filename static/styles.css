@@ -269,6 +269,10 @@ main {
     gap: 15px;
     max-width: 600px;
     margin: 0 auto;
+    background-color: #f9f9f9;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .form-grid label {
@@ -281,6 +285,17 @@ main {
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
+}
+.form-grid select:focus,
+.form-grid select:hover {
+    border-color: #007bff;
+    outline: none;
+}
+.form-grid input:focus,
+.form-grid input:hover
+ {
+    border-color: #007bff;
+    outline: none;
 }
 
 .submit-button {
@@ -482,6 +497,7 @@ form .submit-button {
 
 form .submit-button:hover {
     background-color: #45a049;
+    transform: scale(1.01);
     /* Slightly darker green on hover */
 }
 
@@ -501,12 +517,15 @@ form .submit-button:disabled {
 
 /* File input container */
 .file-input-wrapper {
-    display: inline-block;
+    display: flex;
     /* Inline block to match button size */
     position: relative;
     /* Position relative for custom styling */
     font-family: 'Roboto', sans-serif;
     /* Modern font */
+    gap: 10px;
+    align-items: center;
+    width: 100%;
 }
 
 /* Hide the default file input */
@@ -528,37 +547,26 @@ form .submit-button:disabled {
 /* Custom button for file upload */
 .file-input-wrapper .custom-file-button {
     background-color: #2c3e50;
-    /* Green background */
     color: white;
-    /* White text */
     padding: 10px 20px;
-    /* Padding for button size */
     border: none;
-    /* Remove border */
     border-radius: 4px;
-    /* Rounded corners */
     font-size: 16px;
-    /* Larger font size */
     font-weight: bold;
-    /* Bold text */
     text-align: center;
-    /* Center text */
     cursor: pointer;
-    /* Pointer cursor */
     transition: background-color 0.3s ease;
-    /* Smooth transition for hover */
+    padding: 8px 15px;
 }
 
 /* Hover effect for button */
 .file-input-wrapper .custom-file-button:hover {
-    background-color: #45a049;
-    /* Slightly darker green */
+    background-color: #5f7386;
 }
 
 /* Active effect for button */
 .file-input-wrapper .custom-file-button:active {
-    background-color: #3e8e41;
-    /* Even darker green */
+    background-color: #5f7386;
 }
 
 .prediction-result {
@@ -610,14 +618,14 @@ form .submit-button:disabled {
      transition: background-color 0.3s ease;
  }
 
- .custom-file-button:hover {
-     background-color: #45a049;
- }
-
  .file-name {
      font-size: 1rem;
      color: #333;
      font-style: italic;
+     white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     max-width: 300px;
  }
  /* Bulk Prediction Styles */
 .bulk-prediction {
@@ -776,5 +784,36 @@ form .submit-button:disabled {
     background-color: #d4edda;
     border: 2px solid #28a745;
     color: #155724;
+}
+
+.checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.model-parameters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.parameter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.section-label {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
